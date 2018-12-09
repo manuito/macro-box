@@ -9,6 +9,8 @@ LiquidCrystal lcd(LCD_RS_PIN, LCD_EN_PIN, LCD_D4_PIN, LCD_D5_PIN, LCD_D6_PIN, LC
 // Backlight level
 uint8_t currentBacklight = MAX_BACKLIGHT;
 
+bool fadeSwitch = false;
+
 // Init display (LCD + Backlight)
 void setupDisplay() {
   
@@ -23,6 +25,7 @@ void setupDisplay() {
 // For fixed light level
 void setBacklightLevel(unsigned char val){
   currentBacklight = val;
+  updateBacklight();
 }
 
 void stepUpBacklightLevel(){
@@ -31,6 +34,20 @@ void stepUpBacklightLevel(){
   }else {
     currentBacklight = MAX_BACKLIGHT;
   }
+  updateBacklight();
+}
+
+void fadeBacklightLevel(){
+  if(fadeSwitch){
+    currentBacklight++;
+  } else {
+    currentBacklight--;
+  }
+  
+  if(currentBacklight >= MAX_BACKLIGHT || currentBacklight <= 0){
+    fadeSwitch = !fadeSwitch;
+  }
+
   updateBacklight();
 }
 

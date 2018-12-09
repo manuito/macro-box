@@ -34,6 +34,7 @@
 #define KEY_4_PIN     15
 #define KEY_5_PIN     14
 
+bool editMode = false;
 
 void setup() {
 
@@ -71,6 +72,10 @@ void loop() {
 
   delay(20);
   
+  if(editMode){
+    processingEditModeAction();
+  }
+  
   checkModes();
   updateKeys();
   setAllLedsOff();
@@ -85,7 +90,15 @@ void macroPageChangedAction(){
 // Action - edit switch changed - go to edit mode
 void workingModeChangedAction(){
   fadLedsFast();
-  // TODO : set edit mode
+  editMode = !editMode;
+  setBacklightLevel(readBacklightLevel());
+
+  if(editMode){
+    resetDisplay();
+    writeDisplay("EDIT MODE");
+  } else {
+    macroPageChangedAction();
+  }
 }
 
 // Action - macro key pressed - play macro
@@ -93,3 +106,8 @@ void keyPressedAction(){
   commandOnKeyboard(getCurrentPageContentForKey(getCurrentPressedKey()), getCurrentPageModeForKey(getCurrentPressedKey()));
   activateLedWithBlink(getCurrentPressedKey(),2);
 }
+
+void processingEditModeAction(){
+  fadeBacklightLevel();
+}
+
